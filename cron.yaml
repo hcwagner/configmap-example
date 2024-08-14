@@ -1,8 +1,39 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: create-update-configmaps
+  namespace: logstash
+rules:
+  - apiGroups: [""]
+    resources:
+      - configmaps
+    verbs:
+      - get
+      - list
+      - create 
+      - update
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: logstash-configmap-updater
+  namespace: logstash
+subjects:
+  - kind: ServiceAccount
+    name: default
+roleRef:
+  kind: Role
+  name: create-update-configmaps
+  apiGroup: rbac.authorization.k8s.io
+
+---
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: hello
-  namespace: caglke
+  name: logstash-configmap-updater
+  namespace: logstash
 spec:
   schedule: "* * * * *"
   jobTemplate:
