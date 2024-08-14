@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hello
+  namespace: caglke
+spec:
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: configmap-test
+            image: linode-docker.artifactory.linode.com/hwagner/configmap-test:latest
+            imagePullPolicy: Always
+          restartPolicy: OnFailure
+          imagePullSecrets:
+            - name: artifactory-creds
